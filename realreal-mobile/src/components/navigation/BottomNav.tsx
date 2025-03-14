@@ -1,16 +1,25 @@
+'use client'
+
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const BottomNav = () => {
-  const pathname = usePathname();
+interface BottomNavProps {
+  activeRoute?: string;
+}
 
+const BottomNav = ({ activeRoute }: BottomNavProps) => {
+  const pathname = usePathname();
+  
   const isActive = (path: string) => {
+    if (activeRoute) {
+      return activeRoute === path;
+    }
     return pathname === path;
   };
   
   return (
-    <div className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center h-16 px-2">
+    <div className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center h-16 px-2 z-20">
       <Link href="/">
         <div className={`flex flex-col items-center ${isActive('/') ? 'text-black' : 'text-gray-400'}`}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

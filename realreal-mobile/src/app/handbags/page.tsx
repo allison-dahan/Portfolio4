@@ -5,9 +5,21 @@ import Header from '../../components/layout/Header';
 import ProductCard from '../../components/products/ProductCard';
 import FilterSort from '../../components/filters/FilterSort';
 import BottomNav from '../../components/navigation/BottomNav';
+import Link from 'next/link';
+
+// Define product type
+interface Product {
+  id: number;
+  brand: string;
+  name: string;
+  price: string;
+  imageUrl: string;
+  likes?: number;
+  isHold?: boolean;
+}
 
 // Mock data for handbags
-const handbags = [
+const handbags: Product[] = [
   {
     id: 1,
     brand: 'Gucci',
@@ -60,7 +72,17 @@ const handbags = [
 ];
 
 export default function HandbagsPage() {
-  const [products, setProducts] = useState(handbags);
+  const [products, setProducts] = useState<Product[]>(handbags);
+  
+  // Category navigation for top level categories
+  const categories = [
+    { name: 'All', href: '/category/all' },
+    { name: 'Handbags', href: '/handbags', active: true },
+    { name: 'Clothing', href: '/category/women/clothing' },
+    { name: 'Shoes', href: '/category/women/shoes' },
+    { name: 'Accessories', href: '/category/women/accessories' },
+    { name: 'Jewelry', href: '/category/women/jewelry' }
+  ];
   
   const sortOptions = [
     'Newest First',
@@ -71,7 +93,7 @@ export default function HandbagsPage() {
   ];
   
   const handleSort = (option: string) => {
-    let sortedProducts = [...products];
+    const sortedProducts = [...products];
     
     switch(option) {
       case 'Price: Low to High':
@@ -99,7 +121,14 @@ export default function HandbagsPage() {
     setProducts(sortedProducts);
   };
   
-  const handleFilter = (filters: any) => {
+  // Define FilterOptions type
+  type FilterOptions = {
+    categories?: string[];
+    designers?: string[];
+    priceRanges?: string[];
+  };
+  
+  const handleFilter = (filters: FilterOptions) => {
     // In a real app, this would apply the filters to the products
     console.log('Applying filters:', filters);
   };
@@ -107,6 +136,37 @@ export default function HandbagsPage() {
   return (
     <div className="pb-16">
       <Header title="Handbags" showBackButton />
+      
+      {/* Category Navigation Bar - New Addition */}
+      <div className="bg-white border-b border-gray-200 overflow-x-auto scrollbar-hide">
+        <div className="flex whitespace-nowrap px-2">
+          {categories.map((category) => (
+            <Link 
+              key={category.name} 
+              href={category.href}
+              className={`py-3 px-4 text-sm relative ${
+                category.active ? 'text-black font-medium' : 'text-gray-400'
+              }`}
+            >
+              {category.name}
+              {category.active && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
+              )}
+            </Link>
+          ))}
+        </div>
+      </div>
+      
+      {/* New Arrivals Indicator - New Addition */}
+      <div className="bg-gray-50 py-3 px-4">
+        <div className="flex items-center">
+          <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <h2 className="text-lg font-medium">New Arrivals</h2>
+          <span className="ml-auto text-sm text-gray-500">{products.length} items</span>
+        </div>
+      </div>
       
       <FilterSort 
         onSort={handleSort} 
@@ -117,8 +177,6 @@ export default function HandbagsPage() {
       
       <main>
         <div className="px-2 pt-4">
-          <h1 className="text-2xl font-bold px-2 mb-4">New Arrivals</h1>
-          
           <div className="grid grid-cols-2 gap-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -137,7 +195,8 @@ export default function HandbagsPage() {
         </div>
       </main>
       
-      <BottomNav />
+      {/* Pass activeRoute to highlight the Shop tab in the bottom nav */}
+      <BottomNav activeRoute="/shop" />
     </div>
   );
 }

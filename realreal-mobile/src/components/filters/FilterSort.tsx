@@ -1,7 +1,16 @@
+'use client'
+
 import React, { useState } from 'react';
 
+// Define FilterOptions type
+type FilterOptions = {
+  categories?: string[];
+  designers?: string[];
+  priceRanges?: string[];
+};
+
 interface FilterSortProps {
-  onFilter: (filters: any) => void;
+  onFilter: (filters: FilterOptions) => void;
   onSort: (option: string) => void;
   sortOptions: string[];
   initialSort?: string;
@@ -11,6 +20,11 @@ const FilterSort = ({ onFilter, onSort, sortOptions, initialSort }: FilterSortPr
   const [activeSort, setActiveSort] = useState(initialSort || "Newest First");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState<FilterOptions>({
+    categories: [],
+    designers: [],
+    priceRanges: []
+  });
   
   const handleSortChange = (option: string) => {
     setActiveSort(option);
@@ -18,9 +32,14 @@ const FilterSort = ({ onFilter, onSort, sortOptions, initialSort }: FilterSortPr
     setIsSortOpen(false);
   };
   
+  const handleApplyFilters = () => {
+    onFilter(selectedFilters);
+    setIsFilterOpen(false);
+  };
+  
   return (
-    <div className="sticky top-0 z-20 bg-white border-b border-gray-200">
-      <div className="flex justify-between p-2">
+    <div className="sticky top-0 z-20 bg-white">
+      <div className="flex justify-between p-2 border-b border-gray-200">
         <button 
           onClick={() => setIsFilterOpen(true)}
           className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded"
@@ -96,7 +115,13 @@ const FilterSort = ({ onFilter, onSort, sortOptions, initialSort }: FilterSortPr
               </button>
               <h2 className="text-lg font-medium">Filter</h2>
               <button 
-                onClick={() => setIsFilterOpen(false)}
+                onClick={() => {
+                  setSelectedFilters({
+                    categories: [],
+                    designers: [],
+                    priceRanges: []
+                  });
+                }}
                 className="text-lg font-medium"
               >
                 RESET
@@ -112,7 +137,20 @@ const FilterSort = ({ onFilter, onSort, sortOptions, initialSort }: FilterSortPr
                   {['Women', 'Men', 'Jewelry', 'Watches', 'Art', 'Home', 'Kids'].map((category) => (
                     <div key={category} className="flex items-center justify-between">
                       <label className="flex items-center">
-                        <input type="checkbox" className="mr-3 h-5 w-5" />
+                        <input 
+                          type="checkbox" 
+                          className="mr-3 h-5 w-5"
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            setSelectedFilters(prev => {
+                              const updatedCategories = isChecked 
+                                ? [...(prev.categories || []), category]
+                                : (prev.categories || []).filter(c => c !== category);
+                              return { ...prev, categories: updatedCategories };
+                            });
+                          }}
+                          checked={selectedFilters.categories?.includes(category) || false}
+                        />
                         <span>{category}</span>
                       </label>
                       <button className="transform transition-transform">
@@ -125,12 +163,64 @@ const FilterSort = ({ onFilter, onSort, sortOptions, initialSort }: FilterSortPr
                 </div>
               </div>
               
-              {/* Add more filter sections as needed */}
+              <div className="p-4 border-b border-gray-200">
+                <h3 className="text-lg mb-4">Designer</h3>
+                <div className="space-y-4">
+                  {['Gucci', 'Louis Vuitton', 'Chanel', 'Prada', 'Burberry', 'Dior'].map((designer) => (
+                    <div key={designer} className="flex items-center">
+                      <label className="flex items-center">
+                        <input 
+                          type="checkbox" 
+                          className="mr-3 h-5 w-5"
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            setSelectedFilters(prev => {
+                              const updatedDesigners = isChecked 
+                                ? [...(prev.designers || []), designer]
+                                : (prev.designers || []).filter(d => d !== designer);
+                              return { ...prev, designers: updatedDesigners };
+                            });
+                          }}
+                          checked={selectedFilters.designers?.includes(designer) || false}
+                        />
+                        <span>{designer}</span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="p-4 border-b border-gray-200">
+                <h3 className="text-lg mb-4">Price</h3>
+                <div className="space-y-4">
+                  {['Under $500', '$500-$1000', '$1000-$2500', '$2500-$5000', 'Over $5000'].map((priceRange) => (
+                    <div key={priceRange} className="flex items-center">
+                      <label className="flex items-center">
+                        <input 
+                          type="checkbox" 
+                          className="mr-3 h-5 w-5"
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            setSelectedFilters(prev => {
+                              const updatedPriceRanges = isChecked 
+                                ? [...(prev.priceRanges || []), priceRange]
+                                : (prev.priceRanges || []).filter(p => p !== priceRange);
+                              return { ...prev, priceRanges: updatedPriceRanges };
+                            });
+                          }}
+                          checked={selectedFilters.priceRanges?.includes(priceRange) || false}
+                        />
+                        <span>{priceRange}</span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
             
             <div className="fixed bottom-0 w-full bg-white p-4 border-t border-gray-200">
               <button 
-                onClick={() => setIsFilterOpen(false)}
+                onClick={handleApplyFilters}
                 className="w-full bg-black text-white py-3 rounded font-medium"
               >
                 APPLY FILTERS
