@@ -1,33 +1,72 @@
 'use client'
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import Header from '../components/layout/Header';
 import BottomNav from '../components/navigation/BottomNav';
 
-// Create a separate CategoryTile component
-interface CategoryTileProps {
+// Banner component for promotional sections
+interface BannerProps {
   title: string;
-  image: string;
-  href: string;
-  isWide?: boolean;
+  subtitle?: string;
+  backgroundColor: string;
+  textColor: string;
+  buttonText: string;
+  buttonLink: string;
+  buttonColor?: string;
+  buttonTextColor?: string;
 }
 
-const CategoryTile = ({ title, image, href, isWide = false }: CategoryTileProps) => {
+const PromoBanner = ({ 
+  title, 
+  subtitle, 
+  backgroundColor, 
+  textColor, 
+  buttonText, 
+  buttonLink,
+  buttonColor = "bg-black",
+  buttonTextColor = "text-white"
+}: BannerProps) => {
+  return (
+    <div className={`w-full mb-6 overflow-hidden rounded-lg ${backgroundColor}`}>
+      <div className="p-6">
+        <h2 className={`text-2xl font-serif mb-1 ${textColor}`}>{title}</h2>
+        {subtitle && <p className={`mb-4 ${textColor} opacity-90`}>{subtitle}</p>}
+        <Link href={buttonLink}>
+          <div className={`${buttonColor} ${buttonTextColor} py-3 px-6 inline-block`}>
+            <span className="font-medium tracking-wider">{buttonText}</span>
+          </div>
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+// Featured Item component for seasonal/featured items
+interface FeaturedItemProps {
+  title: string;
+  brand: string;
+  image: string;
+  href: string;
+}
+
+const FeaturedItem = ({ title, brand, image, href }: FeaturedItemProps) => {
   return (
     <Link href={href}>
-      <div className={`relative rounded overflow-hidden ${isWide ? 'col-span-2' : 'col-span-1'}`}>
+      <div className="relative rounded overflow-hidden">
         <div className="aspect-square relative">
-          {/* If you don't have actual images yet, use color placeholders */}
-          <div className="absolute inset-0 bg-gray-200" style={{
-            backgroundImage: `url(${image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }} />
+          <Image
+            src={image}
+            alt={`${brand} ${title}`}
+            fill
+            className="object-cover"
+          />
         </div>
         <div className="absolute inset-0 flex items-end p-4">
           <div className="bg-white bg-opacity-80 px-4 py-2 w-full">
-            <p className="text-center font-medium uppercase text-sm tracking-wide">{title}</p>
+            <p className="text-center font-medium text-sm">{brand}</p>
+            <p className="text-center text-sm">{title}</p>
           </div>
         </div>
       </div>
@@ -36,41 +75,31 @@ const CategoryTile = ({ title, image, href, isWide = false }: CategoryTileProps)
 };
 
 export default function HomePage() {
-  // Category navigation tabs
-  const categoryTabs = ['HOME', 'KIDS', 'ALL', 'WOMEN', 'MEN', 'JEWELRY', 'WATCHES'];
-  const [activeTab, setActiveTab] = React.useState('WOMEN');
-  
-  // Featured product categories
-  const featuredCategories = [
+  // Featured seasonal items
+  const featuredItems = [
     { 
-      title: 'HANDBAGS', 
-      image: '/images/handbags.jpg',
-      href: '/handbags' 
+      brand: 'Gucci',
+      title: 'Leather Ophidia Mini',
+      image: '/images/products/gucci-ophidia.png',
+      href: '/product/1' 
     },
     { 
-      title: 'DRESSES', 
-      image: '/images/dresses.jpg', 
-      href: '/category/women/dresses' 
+      brand: 'Burberry',
+      title: 'Leather Crossbody Bag',
+      image: '/images/products/burberry-crossbody.png',
+      href: '/product/2'
     },
     { 
-      title: 'JACKETS & COATS', 
-      image: '/images/jackets.jpg', 
-      href: '/category/women/jackets-coats' 
+      brand: 'Chanel',
+      title: 'Vintage Quilted Flap Bag',
+      image: '/images/products/chanel-flap.png',
+      href: '/product/5'
     },
     { 
-      title: 'SHOES',
-      image: '/images/shoes.jpg', 
-      href: '/category/women/shoes' 
-    },
-    { 
-      title: 'ACCESSORIES', 
-      image: '/images/accessories.jpg',
-      href: '/category/women/accessories' 
-    },
-    { 
-      title: 'ACTIVEWEAR', 
-      image: '/images/activewear.jpg',
-      href: '/category/women/activewear' 
+      brand: 'Louis Vuitton',
+      title: 'Monogram Canvas Neverfull MM',
+      image: '/images/products/lv-neverfull.png',
+      href: '/product/6'
     },
   ];
   
@@ -78,75 +107,54 @@ export default function HomePage() {
     <div className="pb-16">
       <Header title="The RealReal" />
       
-      {/* Category Tabs */}
-      <div className="border-b border-gray-200 overflow-x-auto scrollbar-hide">
-        <div className="flex whitespace-nowrap px-2">
-          {categoryTabs.map((tab) => (
-            <button
-              key={tab}
-              className={`py-3 px-4 font-medium text-sm relative ${
-                activeTab === tab
-                  ? 'text-black'
-                  : 'text-gray-400'
-              }`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-              {activeTab === tab && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
-      
       {/* Promo Banner */}
       <div className="bg-gray-100 py-2 text-center text-sm">
         <p>20% Off! Code: REAL — Terms Apply*</p>
       </div>
       
-      <main>
-        {/* Featured Header */}
-        <div className="px-4 pt-6 pb-4">
-          <p className="uppercase text-sm tracking-wider font-medium">THIS JUST IN</p>
-          <h1 className="text-4xl font-serif mt-1">10,000+ Must-See Finds</h1>
-        </div>
+      <main className="px-4 pt-4">
+        {/* New Arrivals Banner */}
+        <PromoBanner 
+          title="New Arrivals"
+          subtitle="10,000+ Must-See Finds"
+          backgroundColor="bg-gray-100"
+          textColor="text-black"
+          buttonText="SHOP NOW"
+          buttonLink="/handbags"
+          buttonColor="bg-black"
+        />
         
-        {/* Shop All Banner */}
-        <div className="px-4 mb-4">
-          <Link href="/category/all">
-            <div className="bg-black text-white py-3 flex items-center justify-center">
-              <span className="font-medium tracking-wider">SHOP ALL</span>
-            </div>
-          </Link>
-        </div>
+        {/* Sale Banner */}
+        <PromoBanner 
+          title="Winter Sale"
+          subtitle="Up to 70% Off Designer Items"
+          backgroundColor="bg-[#B2202E]" 
+          textColor="text-white"
+          buttonText="SHOP SALE"
+          buttonLink="/category/sale"
+          buttonColor="bg-white"
+          buttonTextColor="text-[#B2202E]"
+        />
         
-        {/* Featured Categories Grid */}
-        <div className="px-4 grid grid-cols-2 gap-4">
-          {featuredCategories.map((category, index) => (
-            <CategoryTile
-              key={category.title}
-              title={category.title}
-              image={category.image}
-              href={category.href}
-              isWide={index === 0} // Make the first category tile wider
-            />
-          ))}
-        </div>
-        
-        {/* New Arrivals Section */}
-        <div className="mt-8 px-4">
-          <h2 className="text-2xl font-serif mb-4">New Arrivals</h2>
+        {/* Seasonal / Featured Items Section */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-serif mb-4">Featured Items</h2>
           
-          <Link href="/handbags">
-            <div className="border border-gray-300 py-3 text-center">
-              <span className="font-medium">VIEW ALL NEW ARRIVALS</span>
-            </div>
-          </Link>
+          <div className="grid grid-cols-2 gap-4">
+            {featuredItems.map((item, index) => (
+              <FeaturedItem
+                key={index}
+                brand={item.brand}
+                title={item.title}
+                image={item.image}
+                href={item.href}
+              />
+            ))}
+          </div>
         </div>
         
         {/* Trending Designers Section */}
-        <div className="mt-8 px-4 pb-8">
+        <div className="mt-8 pb-8">
           <h2 className="text-2xl font-serif mb-4">Trending Designers</h2>
           
           <div className="flex flex-wrap gap-2">

@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 import Header from '../../components/layout/Header';
-import ProductCard from '../../components/products/ProductCard';
 import FilterSort from '../../components/filters/FilterSort';
 import BottomNav from '../../components/navigation/BottomNav';
-import Link from 'next/link';
 
 // Define product type
 interface Product {
@@ -18,14 +18,62 @@ interface Product {
   isHold?: boolean;
 }
 
-// Mock data for handbags
+// Updated Product Card component to handle PNG images
+const ProductCard = ({ product }: { product: Product }) => {
+  return (
+    <Link href={`/product/${product.id}`}>
+      <div className="relative group">
+        {/* Product image */}
+        <div className="aspect-square overflow-hidden rounded-lg relative">
+          <Image
+            src={product.imageUrl}
+            alt={`${product.brand} ${product.name}`}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          
+          {/* "On Hold" overlay */}
+          {product.isHold && (
+            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+              <div className="bg-white px-4 py-2 rotate-[-20deg]">
+                <p className="font-bold text-sm">ON HOLD</p>
+              </div>
+            </div>
+          )}
+          
+          {/* Like button */}
+          <button className="absolute top-2 right-2 w-8 h-8 bg-white bg-opacity-70 rounded-full flex items-center justify-center">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path 
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+        
+        {/* Product details */}
+        <div className="mt-2">
+          <p className="font-medium text-sm">{product.brand}</p>
+          <p className="text-sm text-gray-700 truncate">{product.name}</p>
+          <p className="text-sm font-medium mt-1">{product.price}</p>
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+// Mock data for handbags with PNG extensions
 const handbags: Product[] = [
   {
     id: 1,
     brand: 'Gucci',
     name: 'Leather Ophidia Mini',
     price: 'CA$1,303.68',
-    imageUrl: '/images/products/gucci-ophidia.jpg',
+    imageUrl: '/images/products/gucci-ophidia.png',
     likes: 34
   },
   {
@@ -33,7 +81,7 @@ const handbags: Product[] = [
     brand: 'Burberry',
     name: 'Leather Crossbody Bag',
     price: 'CA$737.51',
-    imageUrl: '/images/products/burberry-crossbody.jpg',
+    imageUrl: '/images/products/burberry-crossbody.png',
     likes: 65
   },
   {
@@ -41,7 +89,7 @@ const handbags: Product[] = [
     brand: 'Christian Dior',
     name: 'Embossed Leather Book Large',
     price: 'CA$2,105.30',
-    imageUrl: '/images/products/dior-book.jpg',
+    imageUrl: '/images/products/dior-book.png',
     likes: 55
   },
   {
@@ -49,7 +97,7 @@ const handbags: Product[] = [
     brand: 'Salvatore Ferragamo',
     name: 'Leather Top Handle Bag',
     price: 'CA$895.00',
-    imageUrl: '/images/products/ferragamo-handle.jpg',
+    imageUrl: '/images/products/ferragamo-handle.png',
     likes: 38,
     isHold: true
   },
@@ -58,7 +106,7 @@ const handbags: Product[] = [
     brand: 'Chanel',
     name: 'Vintage Quilted Flap Bag',
     price: 'CA$3,599.99',
-    imageUrl: '/images/products/chanel-flap.jpg',
+    imageUrl: '/images/products/chanel-flap.png',
     likes: 89
   },
   {
@@ -66,23 +114,13 @@ const handbags: Product[] = [
     brand: 'Louis Vuitton',
     name: 'Monogram Canvas Neverfull MM',
     price: 'CA$1,945.00',
-    imageUrl: '/images/products/lv-neverfull.jpg',
+    imageUrl: '/images/products/lv-neverfull.png',
     likes: 72
   }
 ];
 
 export default function HandbagsPage() {
   const [products, setProducts] = useState<Product[]>(handbags);
-  
-  // Category navigation for top level categories
-  const categories = [
-    { name: 'All', href: '/category/all' },
-    { name: 'Handbags', href: '/handbags', active: true },
-    { name: 'Clothing', href: '/category/women/clothing' },
-    { name: 'Shoes', href: '/category/women/shoes' },
-    { name: 'Accessories', href: '/category/women/accessories' },
-    { name: 'Jewelry', href: '/category/women/jewelry' }
-  ];
   
   const sortOptions = [
     'Newest First',
@@ -137,37 +175,6 @@ export default function HandbagsPage() {
     <div className="pb-16">
       <Header title="Handbags" showBackButton />
       
-      {/* Category Navigation Bar - New Addition */}
-      <div className="bg-white border-b border-gray-200 overflow-x-auto scrollbar-hide">
-        <div className="flex whitespace-nowrap px-2">
-          {categories.map((category) => (
-            <Link 
-              key={category.name} 
-              href={category.href}
-              className={`py-3 px-4 text-sm relative ${
-                category.active ? 'text-black font-medium' : 'text-gray-400'
-              }`}
-            >
-              {category.name}
-              {category.active && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black" />
-              )}
-            </Link>
-          ))}
-        </div>
-      </div>
-      
-      {/* New Arrivals Indicator - New Addition */}
-      <div className="bg-gray-50 py-3 px-4">
-        <div className="flex items-center">
-          <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <h2 className="text-lg font-medium">New Arrivals</h2>
-          <span className="ml-auto text-sm text-gray-500">{products.length} items</span>
-        </div>
-      </div>
-      
       <FilterSort 
         onSort={handleSort} 
         onFilter={handleFilter}
@@ -177,6 +184,8 @@ export default function HandbagsPage() {
       
       <main>
         <div className="px-2 pt-4">
+          <h1 className="text-2xl font-bold px-2 mb-4">New Arrivals</h1>
+          
           <div className="grid grid-cols-2 gap-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -195,8 +204,7 @@ export default function HandbagsPage() {
         </div>
       </main>
       
-      {/* Pass activeRoute to highlight the Shop tab in the bottom nav */}
-      <BottomNav activeRoute="/shop" />
+      <BottomNav />
     </div>
   );
 }

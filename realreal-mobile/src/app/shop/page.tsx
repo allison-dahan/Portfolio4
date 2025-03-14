@@ -5,62 +5,112 @@ import Link from 'next/link';
 import Header from '../../components/layout/Header';
 import BottomNav from '../../components/navigation/BottomNav';
 
-interface Category {
-  id: string;
-  name: string;
-  image: string;
-  highlight?: string;
-  viewAll?: boolean;
-  action?: string;
+// Category item component
+interface CategoryItemProps {
+  title: string;
+  href: string;
+  count?: number;
 }
 
+const CategoryItem = ({ title, href, count }: CategoryItemProps) => {
+  return (
+    <Link href={href}>
+      <div className="py-4 px-4 border-b border-gray-100 flex items-center justify-between">
+        <span className="font-medium">{title}</span>
+        <div className="flex items-center">
+          {count && <span className="text-gray-500 mr-2 text-sm">{count}</span>}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+// Featured designer component
+interface DesignerChipProps {
+  name: string;
+  href: string;
+}
+
+const DesignerChip = ({ name, href }: DesignerChipProps) => {
+  return (
+    <Link href={href}>
+      <div className="bg-gray-100 px-4 py-2 rounded-full">
+        <span className="font-medium">{name}</span>
+      </div>
+    </Link>
+  );
+};
+
 export default function ShopPage() {
-  const categories: Category[] = [
-    { id: 'categories', name: 'Categories', image: '/images/categories.jpg', viewAll: true },
-    { id: 'designers', name: 'Designers', image: '/images/designers.jpg', viewAll: true },
-    { id: 'new-arrivals', name: 'New Arrivals', image: '/images/new-arrivals.jpg', viewAll: true },
-    { id: 'sale', name: 'Sale', image: '/images/sale.jpg', highlight: 'Up to 75% Off', viewAll: true },
-    { id: 'bags', name: 'Bags', image: '/images/bags.jpg', viewAll: true },
-    { id: 'jewelry', name: 'Jewelry', image: '/images/jewelry.jpg', viewAll: true },
-    { id: 'rare-finds', name: 'Rare Finds', image: '/images/rare-finds.jpg', action: 'LEARN MORE' }
+  // Main categories
+  const mainCategories = [
+    { title: 'Women', href: '/category/women', count: 10245 },
+    { title: 'Men', href: '/category/men', count: 8753 },
+    { title: 'Jewelry', href: '/category/jewelry', count: 4521 },
+    { title: 'Watches', href: '/category/watches', count: 3287 },
+    { title: 'Bags', href: '/category/bags', count: 6542 },
+    { title: 'Home', href: '/category/home', count: 2145 },
+    { title: 'Kids', href: '/category/kids', count: 1532 },
+  ];
+
+  // Featured designers
+  const featuredDesigners = [
+    'Gucci', 'Chanel', 'Louis Vuitton', 'Prada', 'Burberry', 'Dior',
+    'Hermès', 'Cartier', 'Tiffany & Co.', 'Fendi', 'Saint Laurent', 'Balenciaga'
   ];
   
   return (
     <div className="pb-16">
-      <Header />
-      
+      <Header title="Shop" />
+
       <main>
-        <div className="mt-1">
-          <h1 className="text-2xl px-4 py-2 font-serif">Shop</h1>
+        {/* Categories Section */}
+        <div className="bg-white">
+          <div className="px-4 py-4 border-b border-gray-200">
+            <h2 className="text-2xl font-serif">Categories</h2>
+          </div>
           
-          {categories.map((category) => (
-            <Link key={category.id} href={category.id === 'new-arrivals' ? '/handbags' : `/category/${category.id}`}>
-              <div className="relative my-1 h-32 border-b border-gray-100 bg-gray-50 overflow-hidden">
-                <div className="absolute inset-0">
-                  {/* We'll use empty divs with background colors as placeholders */}
-                  {/* In production, you would use real images */}
-                  <div className="absolute inset-0 bg-gray-200" style={{
-                    backgroundImage: `url(${category.image})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                  }} />
-                </div>
-                
-                <div className="relative h-full flex items-center px-4">
-                  <div>
-                    <h2 className="text-2xl font-bold">{category.name}</h2>
-                    {category.viewAll && <p className="mt-1 text-sm">VIEW ALL</p>}
-                    {category.action && <p className="mt-1 text-sm">{category.action}</p>}
-                  </div>
-                  {category.highlight && (
-                    <div className="ml-auto text-right">
-                      <p className="text-3xl font-serif">{category.highlight}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Link>
-          ))}
+          <div className="divide-y divide-gray-100">
+            {mainCategories.map((category) => (
+              <CategoryItem 
+                key={category.title}
+                title={category.title}
+                href={category.href}
+                count={category.count}
+              />
+            ))}
+          </div>
+        </div>
+        
+        {/* Popular Searches */}
+        <div className="mt-6 px-4">
+          <h2 className="text-2xl font-serif mb-4">Popular Searches</h2>
+          
+          <div className="space-y-2">
+            <CategoryItem title="New Arrivals" href="/category/new-arrivals" />
+            <CategoryItem title="Sale" href="/category/sale" />
+            <CategoryItem title="Handbags" href="/handbags" />
+            <CategoryItem title="Fine Jewelry" href="/category/fine-jewelry" />
+            <CategoryItem title="Luxury Watches" href="/category/luxury-watches" />
+          </div>
+        </div>
+        
+        {/* Featured Designers Section */}
+        <div className="mt-6 px-4 pb-8">
+          <h2 className="text-2xl font-serif mb-4">Featured Designers</h2>
+          
+          <div className="flex flex-wrap gap-2">
+            {featuredDesigners.map((designer) => (
+              <DesignerChip 
+                key={designer}
+                name={designer}
+                href={`/designer/${designer.toLowerCase().replace(' ', '-')}`}
+              />
+            ))}
+          </div>
         </div>
       </main>
       
