@@ -47,13 +47,13 @@ const DesignerChip = ({ name, href }: DesignerChipProps) => {
 export default function ShopPage() {
   // Main categories
   const mainCategories = [
-    { title: 'Women', href: '/category/women', count: 10245 },
-    { title: 'Men', href: '/category/men', count: 8753 },
-    { title: 'Jewelry', href: '/category/jewelry', count: 4521 },
-    { title: 'Watches', href: '/category/watches', count: 3287 },
-    { title: 'Bags', href: '/category/bags', count: 6542 },
-    { title: 'Home', href: '/category/home', count: 2145 },
-    { title: 'Kids', href: '/category/kids', count: 1532 },
+    { title: 'Women', href: '/shop', count: 10245 },
+    { title: 'Men', href: '/shop', count: 8753 },
+    { title: 'Jewelry', href: '/shop', count: 4521 },
+    { title: 'Watches', href: '/shop', count: 3287 },
+    { title: 'Bags', href: '/handbags', count: 6542 },
+    { title: 'Home', href: '/shop', count: 2145 },
+    { title: 'Kids', href: '/shop', count: 1532 },
   ];
 
   // Featured designers
@@ -90,11 +90,11 @@ export default function ShopPage() {
           <h2 className="text-2xl font-serif mb-4">Popular Searches</h2>
           
           <div className="space-y-2">
-            <CategoryItem title="New Arrivals" href="/category/new-arrivals" />
-            <CategoryItem title="Sale" href="/category/sale" />
+            <CategoryItem title="New Arrivals" href="/handbags" />
+            <CategoryItem title="Sale" href="/shop" />
             <CategoryItem title="Handbags" href="/handbags" />
-            <CategoryItem title="Fine Jewelry" href="/category/fine-jewelry" />
-            <CategoryItem title="Luxury Watches" href="/category/luxury-watches" />
+            <CategoryItem title="Fine Jewelry" href="/shop" />
+            <CategoryItem title="Luxury Watches" href="/shop" />
           </div>
         </div>
         
@@ -107,7 +107,7 @@ export default function ShopPage() {
               <DesignerChip 
                 key={designer}
                 name={designer}
-                href={`/designer/${designer.toLowerCase().replace(' ', '-')}`}
+                href={`/shop`}
               />
             ))}
           </div>

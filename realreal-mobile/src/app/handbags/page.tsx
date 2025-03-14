@@ -18,10 +18,10 @@ interface Product {
   isHold?: boolean;
 }
 
-// Updated Product Card component to handle PNG images
+// Updated Product Card component to point to handbags page instead of product detail
 const ProductCard = ({ product }: { product: Product }) => {
   return (
-    <Link href={`/product/${product.id}`}>
+    <Link href="/handbags"> {/* Changed from /product/${product.id} */}
       <div className="relative group">
         {/* Product image */}
         <div className="aspect-square overflow-hidden rounded-lg relative">
@@ -192,7 +192,7 @@ export default function HandbagsPage() {
             ))}
           </div>
           
-          {/* Save Search Banner */}
+          {/* Save Search Banner - links to handbags */}
           <div className="mt-6 mb-4 p-4 bg-black text-white text-center rounded">
             <button className="flex items-center justify-center w-full">
               <svg className="mr-2" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

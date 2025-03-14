@@ -45,7 +45,7 @@ const ProductCard = ({ product }: ProductProps) => {
         </button>
       </div>
       
-      <Link href={`/product/${product.id}`}>
+      <Link href={`/`}>
         <div className="block">
           <div className="relative aspect-square overflow-hidden">
             <Image 

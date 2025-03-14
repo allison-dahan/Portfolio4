@@ -75,31 +75,31 @@ const FeaturedItem = ({ title, brand, image, href }: FeaturedItemProps) => {
 };
 
 export default function HomePage() {
-  // Featured seasonal items
+  // Featured seasonal items - redirecting all product links to /handbags
   const featuredItems = [
     { 
       brand: 'Gucci',
       title: 'Leather Ophidia Mini',
       image: '/images/products/gucci-ophidia.png',
-      href: '/product/1' 
+      href: '/handbags' // Changed from /product/1
     },
     { 
       brand: 'Burberry',
       title: 'Leather Crossbody Bag',
       image: '/images/products/burberry-crossbody.png',
-      href: '/product/2'
+      href: '/handbags' // Changed from /product/2
     },
     { 
       brand: 'Chanel',
       title: 'Vintage Quilted Flap Bag',
       image: '/images/products/chanel-flap.png',
-      href: '/product/5'
+      href: '/handbags' // Changed from /product/5
     },
     { 
       brand: 'Louis Vuitton',
       title: 'Monogram Canvas Neverfull MM',
       image: '/images/products/lv-neverfull.png',
-      href: '/product/6'
+      href: '/handbags' // Changed from /product/6
     },
   ];
   
@@ -124,14 +124,14 @@ export default function HomePage() {
           buttonColor="bg-black"
         />
         
-        {/* Sale Banner */}
+        {/* Sale Banner - pointing to handbags */}
         <PromoBanner 
           title="Winter Sale"
           subtitle="Up to 70% Off Designer Items"
           backgroundColor="bg-[#B2202E]" 
           textColor="text-white"
           buttonText="SHOP SALE"
-          buttonLink="/category/sale"
+          buttonLink="/handbags" // Changed from /category/sale
           buttonColor="bg-white"
           buttonTextColor="text-[#B2202E]"
         />
@@ -153,13 +153,13 @@ export default function HomePage() {
           </div>
         </div>
         
-        {/* Trending Designers Section */}
+        {/* Trending Designers Section - pointing to /shop */}
         <div className="mt-8 pb-8">
           <h2 className="text-2xl font-serif mb-4">Trending Designers</h2>
           
           <div className="flex flex-wrap gap-2">
             {['Gucci', 'Chanel', 'Louis Vuitton', 'Prada', 'Burberry', 'Dior'].map((designer) => (
-              <Link key={designer} href={`/designer/${designer.toLowerCase().replace(' ', '-')}`}>
+              <Link key={designer} href="/shop">
                 <div className="bg-gray-100 px-4 py-2 rounded-full">
                   <span className="font-medium">{designer}</span>
                 </div>
